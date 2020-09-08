@@ -164,11 +164,11 @@ class ScheduledTask {
 	 */
 	async update({ time, data, catchUp } = {}) {
 		if (time) {
-			const [_time, _cron] = this.constructor._resolveTime(time);
+			const [_time, _recurring] = this.constructor._resolveTime(time);
 			this.time = _time;
 			this.store.tasks.splice(this.store.tasks.indexOf(this), 1);
 			this.store._insert(this);
-			this.recurring = _cron;
+			this.recurring = _recurring;
 		}
 		if (data) this.data = data;
 		if (typeof catchUp !== 'undefined') this.catchUp = catchUp;
@@ -206,7 +206,7 @@ class ScheduledTask {
 			time: this.time.getTime(),
 			catchUp: this.catchUp,
 			data: this.data,
-			repeat: this.recurring ? this.recurring.cron : null
+			repeat: this.recurring ? this.recurring.cron || this.recurring : null
 		};
 	}
 
@@ -218,6 +218,7 @@ class ScheduledTask {
 	 * @private
 	 */
 	static _resolveTime(time) {
+		if (time.runAt) return [time.runAt + time.freq, { runAt: time.runAt + time.freq, time.freq }]
 		if (time instanceof Date) return [time, null];
 		if (time instanceof Cron) return [time.next(), time];
 		if (typeof time === 'number') return [new Date(time), null];
