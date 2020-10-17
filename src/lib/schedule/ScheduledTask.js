@@ -218,7 +218,12 @@ class ScheduledTask {
 	 * @private
 	 */
 	static _resolveTime(time) {
-		if (time.runAt) return [new Date(time.runAt), { runAt: time.runAt + time.freq, freq: time.freq }]
+		if (time.runAt) {
+      const now = Date.now()
+		  let runNext = time.runAt + time.freq;
+      while (now > runNext) runNext = runNext + time.freq;
+		  return [new Date(time.runAt), { runAt: runNext, freq: time.freq }]
+		}
 		if (time instanceof Date) return [time, null];
 		if (time instanceof Cron) return [time.next(), time];
 		if (typeof time === 'number') return [new Date(time), null];
