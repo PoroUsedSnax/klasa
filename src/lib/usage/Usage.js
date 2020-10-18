@@ -31,7 +31,12 @@ class Usage {
 		 * @since 0.0.1
 		 * @type {string}
 		 */
-		this.deliminatedUsage = usageString !== '' ? ` ${usageString.split(' ').join(usageDelim)}` : '';
+		this.deliminatedUsage = usage !== '' ?
+		      ` ${usage.replace(/(?:[<([|]\w+(:(?:\.\.\.)?\w+(?:{\d*,\d*}|\/.+\/\w*)?)[|\])>]|( \[\.\.\.\]))/g, (match, p1, p2) => {
+			if (p1) return match.replace(p1, '');
+			if (p2) return match.replace(p2, '');
+	        }).replace(/\|/g, ' | ')}` :
+	        '';
 
 		/**
 		 * The usage string
