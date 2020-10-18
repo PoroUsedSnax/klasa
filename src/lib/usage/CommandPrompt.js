@@ -32,6 +32,7 @@ class CommandPrompt extends TextPrompt {
 	 * @returns {Promise<any[]>} The parameters resolved
 	 */
 	run() {
+		if (this.message.subcommand) this.message.args.shift();
 		return this.validateArgs();
 	}
 
