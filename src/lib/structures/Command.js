@@ -1,4 +1,4 @@
-const { Permissions } = require('discord.js');
+const { Permissions, Collection } = require('discord.js');
 const AliasPiece = require('./base/AliasPiece');
 const Usage = require('../usage/Usage');
 const CommandUsage = require('../usage/CommandUsage');
@@ -178,14 +178,14 @@ class Command extends AliasPiece {
 		 * @since 0.5.0
 		 * @type {boolean}
 		 */
-		this.subcommands = options.subcommands;
+		this.subcommands = new Collection();
 
 		/**
 		 * The parsed usage for the command
 		 * @since 0.0.1
 		 * @type {CommandUsage}
 		 */
-		this.usage = new CommandUsage(this.client, options.usage, options.usageDelim, this);
+		this.usage = new CommandUsage(this.client, options.usage, options.friendlyUsage || '', options.usageDelim, this);
 
 		/**
 		 * The level at which cooldowns should apply
@@ -273,6 +273,19 @@ class Command extends AliasPiece {
 		this.usage.createCustomResolver(type, resolver);
 		return this;
 	}
+	
+	/**
+	 * Registers a one-off custom resolver for a sub command. See tutorial {@link CommandsCustomResolvers}
+	 * @since 0.5.0
+	 * @param {string} type The type of the usage argument
+	 * @param {Function} resolver The one-off custom resolver
+	 * @returns {this}
+	 * @chainable
+	 */
+	createCustomSubResolver(command, type, resolver) {
+		this.subcommands.get(command).usage.createCustomResolver(type, resolver);
+		return this;
+	}
 
 	/**
 	 * Customizes the response of an argument if it fails resolution. See tutorial {@link CommandsCustomResponses}
@@ -291,6 +304,12 @@ class Command extends AliasPiece {
 	 */
 	customizeResponse(name, response) {
 		this.usage.customizeResponse(name, response);
+		return this;
+	}
+	
+	createSubCommand(name, usageString, options = {}) {
+		const subcommand = new SubCommand(this.client, name, this, usageString, options);
+		this.subcommands.set(name, subcommand);
 		return this;
 	}
 
@@ -336,7 +355,7 @@ class Command extends AliasPiece {
 			usage: {
 				usageString: this.usage.usageString,
 				usageDelim: this.usage.usageDelim,
-				nearlyFullUsage: this.usage.nearlyFullUsage
+				fullUsage: this.usage.fullUsage
 			},
 			usageDelim: this.usageDelim,
 			usageString: this.usageString
