@@ -26,6 +26,12 @@ module.exports = Structures.extend('Message', Message => {
 			 * @type {?Command}
 			 */
 			this.command = this.command || null;
+			
+			/**
+			 * The subcommand being run
+			 * @type {?SubCommand}
+			 */
+			this.subcommand = this.subcommand || null;
 
 			/**
 			 * The name of the command being run
@@ -298,12 +304,15 @@ module.exports = Structures.extend('Message', Message => {
 
 				this.prefix = prefix.regex;
 				this.prefixLength = prefix.length;
-				this.commandText = this.content.slice(prefix.length).trim().split(' ')[0].toLowerCase();
+				const args = this.content.slice(prefix.length).trim().split(' ');
+				this.commandText = args[0].toLowerCase();
+				const subCommandText = args[1] ? args[1].toLowerCase() : null;
 				this.command = this.client.commands.get(this.commandText) || null;
+				this.subcommand = this.command.subcommands.size && this.command.subcommands.get(subcommandText) || null;
 
 				if (!this.command) return;
 
-				this.prompter = this.command.usage.createPrompt(this, {
+				this.prompter = this[this.subcommand ? 'subcommand' : 'command'].usage.createPrompt(this, {
 					flagSupport: this.command.flagSupport,
 					quotedStringSupport: this.command.quotedStringSupport,
 					time: this.command.promptTime,
