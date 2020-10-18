@@ -22,27 +22,29 @@ module.exports = class extends Monitor {
 	}
 
 	async runCommand(message) {
+		const { command, params } = message;
 		const timer = new Stopwatch();
 		if (this.client.options.typing) message.channel.startTyping();
 		try {
-			await this.client.inhibitors.run(message, message.command);
+			await this.client.inhibitors.run(message, command);
 			try {
 				await message.prompter.run();
 				try {
-					const subcommand = message.command.subcommands ? message.params.shift() : undefined;
-					const commandRun = subcommand ? message.command[subcommand](message, message.params) : message.command.run(message, message.params);
-					timer.stop();
+					const subcommand = message.subcommand ? message.subcommand.name : undefined;
+          				const defaultCommand = !subcommand && command.usage.parsedUsage.length && command.usage.parsedUsage[0].possibles.find(p => p.name === params[0]) ? params[0] : undefined;
+          				const commandRun = subcommand || defaultCommand ? command[subcommand || defaultCommand](message, params) : command.run(message, params);
+          				timer.stop();
 					const response = await commandRun;
-					this.client.finalizers.run(message, message.command, response, timer);
-					this.client.emit('commandSuccess', message, message.command, message.params, response);
+					this.client.finalizers.run(message, command, response, timer);
+					this.client.emit('commandSuccess', message, command, params, response);
 				} catch (error) {
-					this.client.emit('commandError', message, message.command, message.params, error);
+					this.client.emit('commandError', message, command, params, error);
 				}
 			} catch (argumentError) {
-				this.client.emit('argumentError', message, message.command, message.params, argumentError);
+				this.client.emit('argumentError', message, command, params, argumentError);
 			}
 		} catch (response) {
-			this.client.emit('commandInhibited', message, message.command, response);
+			this.client.emit('commandInhibited', message, command, response);
 		}
 		if (this.client.options.typing) message.channel.stopTyping();
 	}
