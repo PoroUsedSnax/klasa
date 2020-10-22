@@ -3,7 +3,7 @@ const AliasPiece = require('./base/AliasPiece');
 const Usage = require('../usage/Usage');
 const CommandUsage = require('../usage/CommandUsage');
 const { isFunction } = require('../util/util');
-const SubCommand = require('../SubCommand');
+const SubCommand = require('./SubCommand');
 
 /**
  * Base class for all Klasa Commands. See {@tutorial CreatingCommands} for more information how to use this class
