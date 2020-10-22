@@ -16,7 +16,7 @@ class Usage {
 	 * @param {string} usageString The raw usage string
 	 * @param {string} usageDelim The deliminator for this usage
 	 */
-	constructor(client, usageString, usageDelim) {
+	constructor(client, usage, usageDelim) {
 		/**
 		 * The client this Usage was created with
 		 * @since 0.0.1
@@ -43,7 +43,7 @@ class Usage {
 		 * @since 0.0.1
 		 * @type {string}
 		 */
-		this.usageString = usageString;
+		this.usageString = usage;
 
 		/**
 		 * The usage delim
