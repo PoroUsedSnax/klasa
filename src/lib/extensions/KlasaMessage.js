@@ -308,7 +308,7 @@ module.exports = Structures.extend('Message', Message => {
 				this.commandText = args[0].toLowerCase();
 				const subCommandText = args[1] ? args[1].toLowerCase() : null;
 				this.command = this.client.commands.get(this.commandText) || null;
-				this.subcommand = this.command.subcommands.size && this.command.subcommands.get(subcommandText) || null;
+				this.subcommand = this.command.subcommands.size && this.command.subcommands.get(subCommandText) || null;
 
 				if (!this.command) return;
 
