@@ -253,9 +253,10 @@ module.exports = Structures.extend('Message', Message => {
 		 * @private
 		 */
 		patch(data) {
-			super.patch(data);
+			const res = super.patch(data);
 			this.language = this.guild ? this.guild.language : this.client.languages.default;
 			this._parseCommand();
+			return res;
 		}
 
 		/**
