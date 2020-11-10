@@ -31,7 +31,7 @@ module.exports = class extends Monitor {
 				await message.prompter.run();
 				try {
 					const subcommand = message.subcommand ? message.subcommand.name : undefined;
-          				const defaultCommand = !subcommand && command.usage.parsedUsage.length && command.usage.parsedUsage[0].possibles.find(p => p.name === params[0]) ? params[0] : undefined;
+          				const defaultCommand = !subcommand && command.usage.parsedUsage.length && command.usage.parsedUsage[0].possibles.find(p => p.name === params[0] && p.type === 'default') ? params[0] : undefined;
           				const commandRun = subcommand || defaultCommand ? command[subcommand || defaultCommand](message, params) : command.run(message, params);
           				timer.stop();
 					const response = await commandRun;
