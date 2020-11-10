@@ -32,7 +32,7 @@ class Usage {
 		 * @type {string}
 		 */
 		this.deliminatedUsage = usage !== '' ?
-		      ` ${usage.replace(/(?:[<([|]\w+(:(?:\.\.\.)?\w+(?:{\d*,\d*}|\/.+\/\w*)?)[|\])>]|( \[\.\.\.\]))/g, (match, p1, p2) => {
+		      ` ${usage.replace(/(?:[<([|]?\w+(:(?:\.\.\.)?\w+(?:{\d*,\d*}|\/.+\/\w*)?)[|\])>]|( \[\.\.\.\]))/g, (match, p1, p2) => {
 			if (p1) return match.replace(p1, '');
 			if (p2) return match.replace(p2, '');
 	        }).replace(/\|/g, ' | ')}` :
