@@ -352,7 +352,7 @@ class Command extends AliasPiece {
 			requiredSettings: this.requiredSettings.slice(0),
 			runIn: this.runIn.slice(0),
 			subCategory: this.subCategory,
-			subcommands: this.subcommands.array(),
+			subcommands: this.subcommands.toJSON(),
 			usage: {
 				usageString: this.usage.usageString,
 				usageDelim: this.usage.usageDelim,
