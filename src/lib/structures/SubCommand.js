@@ -13,7 +13,7 @@ class SubCommand {
   
   toJSON() {
     return {
-      ...super.toJSON(),
+      name: this.name,
       usage: {
         fullUsage: this.usage.fullUsage
       }
